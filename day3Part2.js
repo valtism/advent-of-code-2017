@@ -1,5 +1,4 @@
 function run(input) {
-    debugger;
     let grid = [[1]];
     let pos = {
         x: 0,
@@ -20,13 +19,19 @@ function run(input) {
 
 function shouldTurn(pos) {
     // Special case for spiral enlargment at bottom right
-    if (pos.x - 1 === -pos.y) {
+    if (pos.x >= 0 && pos.y <= 0) {
+        if(pos.x -1 === -pos.y) {
+            return true;
+        } else {
+            return false;
+        }
+    } 
+    // Turn at the other corners where x == y
+    if (Math.abs(pos.x) === Math.abs(pos.y)) {
         return true;
-    } else if (pos.x === -pos.y) {
+    } else {
         return false;
     }
-    // Turn at the other corners where x == y
-    return Math.abs(pos.x) === Math.abs(pos.y)
 }
 
 function turn(direction) {
@@ -83,5 +88,3 @@ function updatedGrid(pos, grid, sum) {
     grid[pos.x][pos.y] = sum;
     return grid;
 }
-
-run(1000);
