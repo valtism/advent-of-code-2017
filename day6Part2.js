@@ -3,6 +3,7 @@ const input = [11, 11, 13, 7, 0, 15, 5, 5, 4, 4, 1, 1, 7, 1, 15, 11];
 function run(banks) {
     let cycles = 0;
     let states = [];
+    debugger;
     while (!haveSeenState(banks, states)) {
         states.push(banks);
         banks = redistribute(banks);
@@ -13,9 +14,7 @@ function run(banks) {
 }
 
 function indexOfState(targetState, states) {
-    return states.findIndex(state => {
-        isEqual(targetState, state);
-    });
+    return states.findIndex(state => isEqual(targetState, state));
 }
 
 function haveSeenState(banks, states) {
