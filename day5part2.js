@@ -3,9 +3,15 @@ const input = [0, 0, 0, 1, 2, -1, 0, -5, -6, -5, -3, -3, -8, -3, -7, -8, -4, -9,
 function run(input) {
     let jumps = 0;
     let i = 0;
-    while(input[i] !== undefined) {
+    while (input[i] !== undefined) {
         const jump = input[i];
-        input[i]++;
+
+        if (input[i] >= 3) {
+            input[i]--;
+        } else {
+            input[i]++;
+        }
+
         i += jump;
         jumps++;
     }
