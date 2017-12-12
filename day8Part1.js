@@ -1051,7 +1051,7 @@ function fulfils(condition, registers) {
     const operation = condition.slice(1);
     const register = registers[name];
     const conditionToEval = "".concat(register, ...operation);
-    return eval(condition);
+    return eval(conditionToEval);
 }
 
 run(input);
