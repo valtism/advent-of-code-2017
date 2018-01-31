@@ -3,7 +3,7 @@ const input = `{{{{{{<,,!u!!!>"!>},<,!!'!>,<!!!>,<eu!>},<'{<u>},{<!!!>!>!!!>>,{{
 function run(input) {
     let groupLevel = 0;
     let isGarbage = false;
-    let ignore = true;
+    let ignore = false;
     let score = 0;
 
     for (let i = 0; i < input.length; i++) {
@@ -21,6 +21,8 @@ function run(input) {
         if (isGarbage) {
             if (element === ">") {
                 isGarbage = false;
+                continue;
+            } else {
                 continue;
             }
         }
@@ -41,8 +43,18 @@ function run(input) {
             continue;
         }
     }
-    console.log(score);
     return score;
 }
 
-run(input);
+(function tests() {
+    console.log(run("{}") === 1);
+    console.log(run("{{{}}}") === 6);
+    console.log(run("{{},{}}") === 5);
+    console.log(run("{{{},{},{{}}}}") === 16);
+    console.log(run("{<a>,<a>,<a>,<a>}") === 1);
+    console.log(run("{{<ab>},{<ab>},{<ab>},{<ab>}}") === 9);
+    console.log(run("{{<!!>},{<!!>},{<!!>},{<!!>}}") === 9);
+    console.log(run("{{<a!>},{<a!>},{<a!>},{<ab>}}") === 3);
+})();
+
+console.log(run(input));
