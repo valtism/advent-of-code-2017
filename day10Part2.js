@@ -22,7 +22,7 @@ const tests = ["", "AoC 2017", [1, 2, 3], [1, 2, 4]];
 function run(input) {
     const knotSize = 256;
     const numberOfRounds = 64;
-    let list = Array.from(Array(256).keys());
+    let sparseHash = Array.from(Array(256).keys());
     let currentPosition = 0;
     let skipSize = 0;
 
@@ -32,19 +32,19 @@ function run(input) {
         lengths.forEach(length => {
             const reversedSection = getReversedSection(
                 currentPosition,
-                list,
+                sparseHash,
                 length
             );
-            list = applySection(currentPosition, list, reversedSection);
+            sparseHash = applySection(currentPosition, sparseHash, reversedSection);
             currentPosition = wrappedIndex(
-                list,
+                sparseHash,
                 currentPosition + length + skipSize
             );
             skipSize++;
         });
     }
 
-    const denseHashes = toDenseHashes(list);
+    const denseHashes = toDenseHashes(sparseHash);
 
     return getHexHash(denseHashes);
 }
@@ -67,13 +67,13 @@ function toDenseHashes(sparseHashes) {
 }
 
 function getHexHash(denseHashes) {
-    return denseHashes.reduce((acc, curr) => acc + toHex(curr));
+    return denseHashes.map(e => toHex(e)).join("");
 }
 
 function toHex(decimal) {
     let hex = decimal.toString(16);
     if (hex.length < 2) {
-        "0".concat(hex);
+        hex = "0".concat(hex);
     }
     return hex;
 }
@@ -120,6 +120,8 @@ function applySection(currentPosition, list, section) {
     return newList;
 }
 
+// Tests
 tests.forEach(test => console.log(run(test)));
 
-// console.log(convertToByteString([1, 2, 3]));
+// Actual
+console.log(run(lengths));
