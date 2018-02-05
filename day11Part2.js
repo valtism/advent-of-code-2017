@@ -12,7 +12,7 @@ function getPath(directions) {
     let position = new Hex(0, 0, 0);
     const path = directions
         .map(direction => hexDirection(direction))
-        .map(hexDirection => (position = hexAdd(position, hexDirection)));
+        .map(hexDirection => position = hexAdd(position, hexDirection));
     return path;
 }
 
