@@ -1,42 +1,44 @@
 const fs = require("fs");
 
 function run(input, target) {
-    const linksStrings = input.split("\n");
-    const linksArray = getLinksArray(linksStrings);
-
-    const groups = [];
-    while (groups.length < linksArray.length) {
-        const newGroup = getGroup(target, linksArray);
-        groups.push(newGroup);
-        target = getNewTarget(groupedNodes, linksArray);
-    }
-
-    return numberOfGroups;
-}
-
-function getLinksArray(linksStrings) {
-    return linksStrings
+    const pipes = input.split("\n");
+    const linksArray = pipes
         .map(links => links.match(/\d+/g))
         .map(nodes => nodes.slice(1, nodes.length))
         .map(arr => arr.map(Number));
+
+    const groups = [];
+    while (getNumberOfGroupedNodes(groups) < linksArray.length) {
+        target = getNextUngroupedNode(linksArray, groups);
+        groups.push(getGroup(target, linksArray));
+    }
+
+    return groups.length;
 }
 
-function getGroup(target, linksHashMap) {
-    let linked = new Set();
-    let newLinked = new Set([target]);
+function getNumberOfGroupedNodes(groups) {
+    return groups.reduce((size, set) => (size += set.size), 0);
+}
 
-    while (newLinked.size > linked.size) {
-        linked = newLinked;
-        linksHashMap.forEach((links, i) => {
-            if (newLinked.has(i)) {
-                newLinked = new Set([...newLinked, ...links]);
+function getNextUngroupedNode(linksArray, groups) {
+    const isNotInAnySet = (value, i) => !groups.some(set => set.has(i));
+
+    return linksArray.findIndex(isNotInAnySet);
+}
+
+function getGroup(target, linksArray) {
+    let group = new Set();
+    let newGroup = new Set([target]);
+    while (newGroup.size > group.size) {
+        group = newGroup;
+        linksArray.forEach((links, i) => {
+            if (newGroup.has(i)) {
+                newGroup = new Set([...newGroup, ...links]);
             }
         });
     }
-    return linked;
+    return group;
 }
-
-function getNewTarget(groups, linksArray) {}
 
 (function test() {
     const target = 0;
