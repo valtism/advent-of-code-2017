@@ -1,36 +1,21 @@
 const fs = require("fs");
 
 function run(input) {
-    let layers = parseLayers(input);
-    let severity = -1;
-    let waitTime = 0;
+    const layers = parseLayers(input);
 
-    while (!isSafeTravel(layers, waitTime)) {
-        waitTime++;
-        layers = parseLayers(input);
+    let delay = 0;
+    while (!isSafeTravel(layers, delay)) {
+        delay++;
     }
 
-    // for (waitTime; severity !== 0; waitTime++) {
-    //     severity = isCaught(layers, waitTime);
-    // }
-
-    return waitTime;
+    return delay;
 }
 
-function isSafeTravel(layers, waitTime) {
-    let severity = 0;
-    const lowestDepth = getLowestDepth(layers);
-    for (
-        let currentDepth = 0 - waitTime;
-        currentDepth <= lowestDepth;
-        currentDepth++
-    ) {
-        if (isCaught(currentDepth, layers) && currentDepth >= 0) {
-            return false;
-        }
-        layers = moveScanners(layers);
+class Layer {
+    constructor(depth, range) {
+        this.depth = depth;
+        this.range = range;
     }
-    return true;
 }
 
 function parseLayers(input) {
@@ -40,72 +25,14 @@ function parseLayers(input) {
         .map(e => new Layer(...e));
 }
 
-function getLowestDepth(layers) {
-    return layers[layers.length - 1].depth;
+function isSafeTravel(layers, delay) {
+    return layers.every(layer => !isCaught(layer, delay));
 }
 
-function isCaught(currentDepth, layers) {
-    const layer = getLayer(layers, currentDepth);
-    if (!layer) {
-        return false;
-    }
-    return layer.scannerPosition === 0;
-}
-
-function getSeverityOfCapture(currentDepth, layers) {
-    const layer = getLayer(layers, currentDepth);
-    return layer.depth * layer.range;
-}
-
-function getLayer(layers, currentDepth) {
-    return layers.find(layer => layer.depth === currentDepth);
-}
-
-function moveScanners(layers) {
-    return layers.map(layer => {
-        const movement = getLayerMovement(layer);
-        const scannerPosition = (layer.scannerPosition += movement);
-        const isScannerIncrement = movement > 0;
-        return new Layer(
-            layer.depth,
-            layer.range,
-            scannerPosition,
-            isScannerIncrement
-        );
-    });
-
-    // layers.forEach(layer => {
-    //     if (
-    //         (layer.scannerPosition === 0 && !layer.isScannerIncrement) ||
-    //         (layer.scannerPosition === layer.range - 1 &&
-    //             layer.isScannerIncrement)
-    //     ) {
-    //         layer.isScannerIncrement = !layer.isScannerIncrement;
-    //     }
-    //     layer.scannerPosition += layer.isScannerIncrement ? 1 : -1;
-    // });
-}
-
-function getLayerMovement(layer) {
-    const reverse = willScannerReverse(layer);
-    const increment = layer.isScannerIncrement;
-    return increment !== reverse ? 1 : -1;
-}
-
-function willScannerReverse(layer) {
-    return (
-        (layer.scannerPosition === 0 && !layer.isScannerIncrement) ||
-        (layer.scannerPosition === layer.range - 1 && layer.isScannerIncrement)
-    );
-}
-
-class Layer {
-    constructor(depth, range, scannerPosition = 0, isScannerIncrement = true) {
-        this.depth = depth;
-        this.range = range;
-        this.scannerPosition = scannerPosition;
-        this.isScannerIncrement = isScannerIncrement;
-    }
+function isCaught(layer, delay) {
+    const distanceFromScanner = delay + layer.depth;
+    const scannerPeriod = (layer.range - 1) * 2;
+    return Number.isInteger(distanceFromScanner / scannerPeriod);
 }
 
 (function test() {
