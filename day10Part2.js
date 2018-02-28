@@ -1,3 +1,5 @@
+module.exports = { getKnotHash };
+
 const lengths = [
     102,
     255,
@@ -19,7 +21,7 @@ const lengths = [
 
 const tests = ["", "AoC 2017", [1, 2, 3], [1, 2, 4]];
 
-function run(input) {
+function getKnotHash(input) {
     const knotSize = 256;
     const numberOfRounds = 64;
     let sparseHash = Array.from(Array(256).keys());
@@ -35,7 +37,11 @@ function run(input) {
                 sparseHash,
                 length
             );
-            sparseHash = applySection(currentPosition, sparseHash, reversedSection);
+            sparseHash = applySection(
+                currentPosition,
+                sparseHash,
+                reversedSection
+            );
             currentPosition = wrappedIndex(
                 sparseHash,
                 currentPosition + length + skipSize
@@ -121,7 +127,7 @@ function applySection(currentPosition, list, section) {
 }
 
 // Tests
-tests.forEach(test => console.log(run(test)));
+// tests.forEach(test => console.log(run(test)));
 
 // Actual
-console.log(run(lengths));
+// console.log(run(lengths));
